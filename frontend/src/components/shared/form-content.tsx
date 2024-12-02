@@ -16,6 +16,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { v4 } from "uuid";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/zustand/store";
 
 const formSchema = z.object({
   roomId: z.string().min(1, {
@@ -27,6 +29,8 @@ const formSchema = z.object({
 });
 
 export default function FormContent() {
+  const router = useRouter();
+  const { setUsername } = useUserStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,8 +40,8 @@ export default function FormContent() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("username", values.username);
-    console.log("roomId", values.roomId);
+    setUsername(values.username);
+    router.push(`/editor/${values.roomId}`);
   };
 
   const createNewRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,7 +65,13 @@ export default function FormContent() {
             <FormItem>
               <FormLabel>RoomId</FormLabel>
               <FormControl>
-                <Input placeholder="RoomId" {...field} />
+                <Input
+                  placeholder="RoomId"
+                  {...field}
+                  onKeyUp={(e) =>
+                    e.key === "Enter" && form.handleSubmit(onSubmit)
+                  }
+                />
               </FormControl>
 
               <FormMessage />
@@ -75,7 +85,13 @@ export default function FormContent() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input
+                  placeholder="Username"
+                  {...field}
+                  onKeyUp={(e) =>
+                    e.key === "Enter" && form.handleSubmit(onSubmit)
+                  }
+                />
               </FormControl>
 
               <FormMessage />
@@ -87,7 +103,7 @@ export default function FormContent() {
           <Button variant={"secondary"} onClick={createNewRoom}>
             Create New Room
           </Button>
-          <Button type="submit">Join Existing Room</Button>
+          <Button type="submit">Join Room</Button>
         </div>
       </form>
     </Form>
