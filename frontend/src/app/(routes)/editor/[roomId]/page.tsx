@@ -1,10 +1,12 @@
 import React from "react";
 import CodeEditor from "../components/code-editor";
 
-export default function EditorPage() {
+type Params = Promise<{ roomId: string }>;
+export default async function EditorPage({ params }: { params: Params }) {
+  const { roomId } = await params;
   return (
     <div>
-      <CodeEditor />
+      <CodeEditor roomId={roomId} />
     </div>
   );
 }

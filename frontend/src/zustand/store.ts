@@ -6,6 +6,15 @@ interface UserState {
   setUsername: (username: string) => void;
 }
 
+type Client = {
+  socketId: string;
+  username: string;
+};
+interface ClientsState {
+  clients: Client[];
+  setClients: (client: Client[]) => void;
+}
+
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
@@ -17,3 +26,8 @@ export const useUserStore = create<UserState>()(
     }
   )
 );
+
+export const useClientStore = create<ClientsState>()((set) => ({
+  clients: [],
+  setClients: (clients: Client[]) => set({ clients }),
+}));
